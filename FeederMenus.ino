@@ -66,35 +66,35 @@ void feed(int grams){
 }
 
 void loop() {
-  if (encDir != 0 && prevDir == encDir)
+  if (encDir != 0 && prevDir == encDir) //if encoder turned and it turned the same direction as last turn
   {  
-    if(changingVal){
-       curVal = curVal + encDir;
-       Settingsvals[curSetting] = curVal;
-       displaySetting(curSetting);
+    if(changingVal){ //if button was pressed to edit value
+       curVal = curVal + encDir; //add 1 to current value
+       Settingsvals[curSetting] = curVal; //set menu setting to new value
+       displaySetting(curSetting); //update display
     }
-    else{
-       curSetting = constrain(curSetting + encDir,0,ArraySize(Settings)-1);  
-       displaySetting(curSetting);
+    else{ //cycling through menu screens
+       curSetting = constrain(curSetting + encDir,0,ArraySize(Settings)-1);  //only allow indexes that are valid in settings array
+       displaySetting(curSetting); //update display
     }
-    encDir = 0; 
+    encDir = 0; //reset encoder direction
   }
   
-  prevDir = encDir;
+  prevDir = encDir; //set previous direction
   
-  if (!digitalRead(encpinSW))
+  if (!digitalRead(encpinSW)) //if button was pressed
   {
-    delay(50);
-    while (!digitalRead(encpinSW));
-    changingVal = !changingVal;
-    curVal = Settingsvals[curSetting].toInt();
-    if(curSetting == 2 && changingVal == 0){
-      feed(curVal);
-      Settingsvals[curSetting] = "0";
-      displaySetting(curSetting);
+    delay(50); //debounce
+    while (!digitalRead(encpinSW)); //debounce
+    changingVal = !changingVal; //flip the value
+    curVal = Settingsvals[curSetting].toInt(); //get current setting value String->int
+    if(curSetting == 2 && changingVal == 0){ //if FEED NOW
+      feed(curVal); //feed
+      Settingsvals[curSetting] = "0"; //reset feed to zero
+      displaySetting(curSetting); //update display
     }
   }
-  delay(50);
+  delay(50); //helps smooth things out
 }
 void encoderARising() {
   if ((*pinSensorB & maskSensorB) && encoderAFlag)
